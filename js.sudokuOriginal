@@ -1,0 +1,208 @@
+
+function startGame() {
+    let randomDifferent = [];
+    let tableNumbers = [];
+    for(let i = 0; i < 11; ++i) {
+        tableNumbers[i] = [];
+        for(let j = 0; j < 11; ++j) {
+            tableNumbers[i][j] = 0;
+        }
+    }
+    let sudokuTable = document.getElementById("sudokuTable");
+    let pozitionButon = 0, lengthButton = 9;
+    for(let tableLine = 0; tableLine < 11; ++tableLine) {
+        if(tableLine == 10) {
+            lengthButton = 0;
+            pozitionButon = -1;
+        }
+        for(let tableColumns = pozitionButon; tableColumns < lengthButton; ++tableColumns) {
+            sudokuTable.innerHTML += '<div class = "garage-title" id = '+ tableLine + tableColumns +
+            ' onclick = "tableSudoku(' +  tableLine +', '+ tableColumns +')">  </div>';
+            let random = Math.floor(Math.random() * 9); 
+          // /*
+           random += 1;
+            for(let i = 0, j = tableColumns; i < 9; ++i) {
+                if(tableNumbers[i][j] == random) {
+                    random = 0;
+                    break;
+                }
+            }
+            for(let i = tableLine, j = 0; j < 9; ++j) {
+                if(tableNumbers[i][j] == random) {
+                    random = 0;
+                    break;
+                }
+            }
+            if(tableColumns < 3 && tableLine < 3) { //Mini table 1
+                for(let i = 0; i < 3; ++i) {
+                    for(let j = 0; j < 3; ++j) {
+                        if(tableNumbers[i][j] == random)  {
+                            random = 0;
+                            break;
+                        }
+                    }
+                }
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            }
+            if(tableColumns > 2 &&  tableColumns < 6 && tableLine < 3) { // Mini table 2
+                for(let i = 0; i < 3; ++i) {
+                    for(let j = 3; j < 6; ++j) {
+                        if(tableNumbers[i][j] == random)  {
+                            random = 0;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(tableColumns > 5 && tableColumns < 9 && tableLine < 3) { //Mini table 3
+                for(let i = 2; i < 6; ++i) {
+                    for(let j = 0; j < 3; ++j) {
+                        if(tableNumbers[i][j] == random)  {
+                            random = 0;
+                            break;
+                        }
+                    }
+                }
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            }
+            if(tableLine > 2 && tableColumns < 3 && tableLine < 6) { //Mini table 4
+                for(let i = 0; i < 3; ++i) {
+                    for(let j = 6; j < 9; ++j) {
+                        if(tableNumbers[i][j] == random)  {
+                            random = 0;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(tableColumns > 2 && tableLine > 2 && tableColumns < 6 && tableLine < 6) { // Mini table 5
+                for(let i = 2; i < 6; ++i) {
+                    for(let j = 2; j < 6; ++j) {
+                        if(tableNumbers[i][j] == random)  {
+                            random = 0;
+                            break;
+                        }
+                    }
+                }
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            } 
+            if(tableLine > 2 && tableLine < 6 && tableColumns > 5 && tableColumns < 9) {  // Mini table 6
+                for(let i = 2; i < 6; ++i) {
+                    for(let j = 5; j < 9; ++j) {
+                        if(tableNumbers[i][j] == random)  {
+                            random = 0;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(tableLine > 5 && tableColumns < 3 && tableLine < 9) { //Mini table 7
+                for(let i = 5; i < 9; ++i) {
+                    for(let j = 0; j < 3; ++j) {
+                        if(tableNumbers[i][j] == random)  {
+                            random = 0;
+                            break;
+                        }
+                    }
+                }
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            }
+            if(tableLine > 5 && tableLine < 9 && tableColumns > 2 && tableColumns < 5) { //Mini table 8
+                for(let i = 5; i < 9; ++i) {
+                    for(let j = 2; j < 5; ++j) {
+                        if(tableNumbers[i][j] == random)  {
+                            random = 0;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(tableColumns > 5 && tableLine > 5 && tableColumns < 9 && tableLine < 9) { // Mini table 9
+                for(let i = 5; i < 9; ++i) {
+                    for(let j = 5; j < 9; ++j) {
+                        if(tableNumbers[i][j] == random)  {
+                            random = 0;
+                            break;
+                        }
+                    }
+                }
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            }
+            sudokuTable.innerHTML += " ";
+            tableNumbers[tableLine][tableColumns] = random;
+            if(random != 0 && tableLine < 9) {
+                document.getElementById('' + tableLine + tableColumns).innerHTML = random;
+            }
+            if(tableNumbers[tableLine][tableColumns] == 0) {
+                document.getElementById('' + tableLine + tableColumns).style.background = "black";
+            }
+            if(tableLine == 9) {
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "coral";
+                document.getElementById('' + tableLine + tableColumns).style.background = "orange";
+                if(tableLine < 10)
+                    document.getElementById('' + tableLine + tableColumns).innerHTML = tableColumns + 1;
+                }
+                if(tableLine == 10) {
+                    document.getElementById('' + tableLine + tableColumns).style.background = "red";
+                    document.getElementById('' + tableLine + tableColumns).innerHTML = "Delete";
+                }
+           // */
+            }
+        sudokuTable.innerHTML += "<br>";
+        }
+}
+
+let index = null;
+function tableSudoku(tableLine, tableColumns) {
+   let columnsColor = tableColumns;
+   let colorOfBorder = document.getElementById('' + tableLine + tableColumns).style.borderColor;
+  /// console.log(colorOfBorder);
+   let v = document.getElementById('' + tableLine + tableColumns).style.background;
+   borderNumbers = document.getElementById('' + tableLine + tableColumns).style.background;
+   let lengthButton = 9, pozitionButon = 0;
+   if(tableLine >= 9) {
+       if(tableLine == 10) {
+           lengthButton = 0;
+           pozitionButon = -1;
+           document.getElementById('' + tableLine + tableColumns).innerHTML = " ";
+        }
+        if(tableLine <= 9) {
+            document.getElementById('' + tableLine + tableColumns).style.background = "green";
+        } else {
+            document.getElementById('' + tableLine + tableColumns).innerHTML = "Delete";
+        }
+        index = tableColumns + 1;
+        tableColumns = 0;
+        for(let i = pozitionButon; i < lengthButton; ++i) {
+            if(i != columnsColor)
+            document.getElementById('' + tableLine + tableColumns).style.background = "orange";
+            ++tableColumns; 
+        }
+    }
+    if(v == "black" || v == "gray") { 
+        if(index != 0) {
+            document.getElementById('' + tableLine + tableColumns).innerHTML = index;
+            document.getElementById('' + tableLine + tableColumns).style.background = "gray";
+         } else { 
+            document.getElementById('' + tableLine + tableColumns).innerHTML = " ";
+            document.getElementById('' + tableLine + tableColumns).style.background = "black";
+         }
+    }
+  // console.log(document.getElementById('' + tableLine + tableColumns).value);
+}
+function checkTable(tableLine, tableColumns) {
+    tableLine = 0;
+    console.log(tableColumns);
+    for(let i = 0; i < 9; ++i) {
+        tableColumns = 0;
+        for(let j = 0; j < 9; ++j) {
+            console.log(document.getElementById('' + tableLine + tableColumns));
+            ++tableColumns;
+        }
+        ++tableLine;
+    }
+    let i = showMessage();
+}
+//function showMessage() {
+  //  alert( 'Hello everyone!' );
+ // }
