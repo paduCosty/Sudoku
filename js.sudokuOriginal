@@ -1,4 +1,9 @@
 
+
+//////////NU ESTE ACESTA CODUL PENTRU SUDOKU\\\\\\\\\\\\\\\\\\\\\\\
+///////ACEASTA ESTE O VERSIUNE VECHE A CODULUI INSA NU ESE BUNA (sudoku.2.0.js <- acesta este codul cu probleme)\\\\\\\\\\\\\\\\\\\
+
+
 function startGame() {
     let randomDifferent = [];
     let tableNumbers = [];
