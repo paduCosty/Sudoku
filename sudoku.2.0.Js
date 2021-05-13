@@ -1,29 +1,55 @@
+let table = [], matrix = [], copyTable = []; // cum as fi putut face fara aceste variabile globale?
+
 function startGame() {
-    let tableMatrix = [], table = [];
     for(let i = 0; i <= 9; i++) {
-        tableMatrix[i] = new Array(9);
+        matrix[i] = new Array(9);
         table[i] = new Array(9);
+        copyTable[i] = new Array(9);
     }
-    let indexLine = 0, indexColumn = 0, stopper = true, br = 0;
-    while(stopper== true) {
-        let random = Math.floor(Math.random() * 9) + 1;
-        tableMatrix[indexLine][indexColumn] = lineSearch(tableMatrix, random, indexLine, indexColumn);
-       //console.log(br);
-       ++br;
-        if(indexColumn == 8 && tableMatrix[indexLine][indexColumn] != 0) {
-            ++indexLine;
-            indexColumn = -1;
+    let index = 0, firtsNumber = -1;
+
+    //Math table with orden number
+    for(let i = 0; i < 9; ++i) {
+        for(let j = 0; j < 9; ++j) {
+            matrix[i][j + index] = j + 1;
+            if(j + index > 7) {
+                matrix[i][j + index - 9] = j + index - firtsNumber;
+            }
         }
-        if(indexLine == 8) {
-            stopper = false;
+        if(i == 2) {
+            index = -2;
+            firtsNumber = -3;
         }
-        if(tableMatrix[indexLine][indexColumn] != 0) {
-            ++indexColumn;
+        if(i == 5) {
+            index = -1;
+            firtsNumber = -2;
+        }
+        index += 3;
+        firtsNumber += 3;
+    }
+
+    // random
+    let list = [], listColumn = [];
+    shuffle(list);
+    shuffle(listColumn);
+    for(let i = 0; i < 9; ++i) {
+        for(let j = 0; j < 9; ++j) {
+            table[i][j] = matrix[list[i]][listColumn[j]];
+            copyTable[i][j] = table[i][j];
         }
     }
-    //table = duplicatedRemoveLine(tableMatrix);
-    //table = duplicareColumnRemove(tableMatrix);
-    //table = duplicateMiniTable(tableMatrix);
+
+    // delete numar random
+    for(let i = 0; i < 9; ++i) {
+        for(let j = 0; j < 9; ++j) {
+            let b = Math.floor(Math.random() * 3); // cu cat numarul este mai mic cu atat tabelul va avea mai putine numere
+            if(b == 0) {
+                    table[i][j] = ""; //  daca pui in comnetariu astaea 2 linii jocul va fi completat automat
+                    table[j][i] = ""; //  
+            }
+        }
+    }
+
     //<<<design table>>>\\
     let sudokuTable = document.getElementById("sudokuTable");
     let pozitionButon = 0, lengthButton = 9;
@@ -32,7 +58,7 @@ function startGame() {
             sudokuTable.innerHTML += '<div class = "garage-title" id = '+ tableLine + tableColumns +
             ' onclick = "tableSudoku(' +  tableLine +', '+ tableColumns +')">  </div>'; 
             sudokuTable.innerHTML += " ";
-            document.getElementById('' + tableLine + tableColumns).innerHTML = tableMatrix[tableLine][tableColumns];
+            document.getElementById('' + tableLine + tableColumns).innerHTML = table[tableLine][tableColumns];
             //color Minitable
             if(tableLine < 3 && tableColumns < 3) {
                 document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
@@ -51,8 +77,8 @@ function startGame() {
         }
         sudokuTable.innerHTML += "<br>";
     }
-    //sudokuTable.innerHTML += "<br>";
     let sudokuUser = document.getElementById('sudokuUser');
+    //Meniu utilizator
     for(let arrUser = 0; arrUser < 10; ++arrUser) {
         sudokuUser.innerHTML += '<button class = "consoleUser" id = '+ arrUser + ' onclick = "userNumber(' +  arrUser +')">  </button>'; 
         sudokuUser.innerHTML += " ";
@@ -63,25 +89,71 @@ function startGame() {
         }
     }
 }
-function lineSearch(tableMatrix, random, indexline, indexColumn) {
-    //line
-    let stop = 0;
-    for(let i = indexline, j = 0; j < 9; ++j) {
-        if(tableMatrix[i][j] == random) {
-            stop = 1;
+let index = ""; // nu stiu cum as fi putut transmite parametri intre "tabeleSudoku" si "userNumber" 
+         //am folosit variabila globala index pentru a afla ce numar a apasat in consola utilizatorul
+
+function tableSudoku(tableLine, tableColumns) {
+    if(table[tableLine][tableColumns] == "" && index != " ") {
+        document.getElementById('' + tableLine + tableColumns).innerHTML = index;
+        document.getElementById('' + tableLine + tableColumns).style.color = "green";
+    }
+    index = " ";
+    let endGame = 0;
+    endGame = checkTable(endGame);
+   // console.log(endGame);
+    if(endGame == 81) {
+        document.getElementById("endGame").innerHTML = "Tabel complet apasa aici pentru a incepe jocul din nou";
+    }
+}
+
+function userNumber(arrUser) {
+    index = document.getElementById('' + arrUser).innerHTML;
+    if(index == "Delete") {
+        index = "";
+    }
+}
+
+function checkTable(index) {
+    let tableCompleted = [];
+    for(let i = 0; i < 9; ++i) {
+        tableCompleted[i] = new Array(9);
+    } 
+    for(let i = 0; i < 9; ++i) {
+        for(let j = 0; j < 9; ++j) {
+            tableCompleted[i][j] = document.getElementById('' + i + j).innerHTML;
         }
     }
-    ///column
-    let stopColumn = 0;
-    for(let i = indexline; i >= 0; --i) {
-        if(tableMatrix[i][indexColumn] == random) {
-            stopColumn = 1;
+    for(let i = 0; i < 9; ++i) {
+        for(let j = 0; j < 9; ++j) {
+            if(tableCompleted[i][j] == copyTable[i][j]) {
+                ++index;
+            }
         }
     }
-    if( stop == 0 && stopColumn == 0) {
-        tableMatrix[indexline][indexColumn] = random
-    } else {
-        tableMatrix[indexline][indexColumn] = 0;
+    return index;
+} 
+
+function shuffle(array) {
+    let arrMini1 = [], arrMini2 = [], arrMini3 = [];
+    for(let i = 0; i < 3; ++i) {
+        arrMini1[i] = i;
+        arrMini2[i] = i + 3;
+        arrMini3[i] = i + 6;
     }
-    return tableMatrix[indexline][indexColumn];
+    arrMini1.sort(() => Math.random() - 0.5);
+    arrMini2.sort(() => Math.random() - 0.5);
+    arrMini3.sort(() => Math.random() - 0.5);
+    for(let i = 0, index = 0; i < 9; ++i) {
+        if(i < 3) {
+            array[i] = arrMini1[index];
+        } else if(i > 2 && i < 6) {
+             array[i] = arrMini2[index];
+        } else if(i > 5 && i < 9) {
+             array[i] = arrMini3[index];
+        }
+        ++index;
+        if(i == 2 || i == 5) {
+            index = 0;
+        }
+    }
 }
