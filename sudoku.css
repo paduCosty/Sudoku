@@ -23,3 +23,9 @@
 :focus {
   background: rgb(146, 153, 51);
 }
+#restartGame {
+    font-size: 55px;
+}
+#endGame {
+    font-size: 35px;
+}
