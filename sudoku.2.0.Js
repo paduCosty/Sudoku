@@ -1,14 +1,58 @@
-let table = [], matrix = [], copyTable = []; // cum as fi putut face fara aceste variabile globale?
+let tableCopy = [];
+for(let i = 0; i < 9; ++i) {
+    tableCopy[i] = new Array(9);
+}
 
 function startGame() {
-    for(let i = 0; i <= 9; i++) {
+    let sudokuTable = document.getElementById("sudokuTable");
+    let matrix = finalTable();
+    let pozitionButon = 0, lengthButton = 9;
+    for(let tableLine = 0; tableLine < 9; ++tableLine) {
+        for(let tableColumns = pozitionButon; tableColumns < lengthButton; ++tableColumns) {
+            sudokuTable.innerHTML += '<div class = "garage-title" id = '+ tableLine + tableColumns +
+            ' onclick = "tableSudoku(' +  tableLine +', '+ tableColumns +')">  </div>'; 
+            sudokuTable.innerHTML += " ";
+            document.getElementById('' + tableLine + tableColumns).innerHTML = matrix[tableLine][tableColumns];
+            //color Minitable
+            tableCopy[tableLine][tableColumns] = matrix[tableLine][tableColumns];   
+            if(tableLine < 3 && tableColumns < 3) {
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            } else if(tableLine < 3 && tableColumns > 5 && tableColumns < 9) {
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            } else if(tableLine > 2 && tableLine < 6 && tableColumns > 2 && tableColumns < 6) {
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            } else if(tableLine > 5 && tableLine < 9 && tableColumns < 3) {
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            } else if(tableLine > 5 && tableLine < 9 && tableColumns > 5 && tableColumns < 9) {
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
+            } else {
+                document.getElementById('' + tableLine + tableColumns).style.borderColor = "brown";
+            }
+            document.getElementById('' + tableLine + tableColumns).style.color = "brown";
+        }
+        sudokuTable.innerHTML += "<br>";
+    }
+    //console
+    let sudokuUser = document.getElementById('sudokuUser');
+    for(let arrUser = 0; arrUser < 10; ++arrUser) {
+        sudokuUser.innerHTML += '<button class = "consoleUser" id = '+ arrUser + ' onclick = "userNumber(' +  arrUser +')">  </button>'; 
+        sudokuUser.innerHTML += " ";
+        if(arrUser < 9) {
+            document.getElementById('' + arrUser).innerHTML = arrUser + 1;
+        } else {
+            document.getElementById(arrUser).innerHTML = "Delete";
+        }
+    }
+    sudokuUser.innerHTML += "<br>";
+    sudokuUser.innerHTML += "<br>";
+}
+
+function orderedMatrix() {
+    let matrix = [];
+    for(let i = 0; i < 9; ++i) {
         matrix[i] = new Array(9);
-        table[i] = new Array(9);
-        copyTable[i] = new Array(9);
     }
     let index = 0, firtsNumber = -1;
-
-    //Math table with orden number
     for(let i = 0; i < 9; ++i) {
         for(let j = 0; j < 9; ++j) {
             matrix[i][j + index] = j + 1;
@@ -27,111 +71,30 @@ function startGame() {
         index += 3;
         firtsNumber += 3;
     }
+    return matrix;
+}
 
-    // random
-    let list = [], listColumn = [];
-    shuffle(list);
+let finalTableCopy = [];
+
+function matchMatrixRandom() {
+    let matrix =  orderedMatrix();
+    let table = [];
+    for(let i = 0; i < 9; ++i) {
+        table[i] = new Array(9);
+        finalTableCopy[i] = new Array(9);
+    }
+    let listLine = [], listColumn = [];
+    shuffle(listLine);
     shuffle(listColumn);
     for(let i = 0; i < 9; ++i) {
         for(let j = 0; j < 9; ++j) {
-            table[i][j] = matrix[list[i]][listColumn[j]];
-            copyTable[i][j] = table[i][j];
+            table[i][j] = matrix[listLine[i]][listColumn[j]];
+            finalTableCopy[i][j] = table[i][j];
         }
     }
-
-    // delete numar random
-    for(let i = 0; i < 9; ++i) {
-        for(let j = 0; j < 9; ++j) {
-            let b = Math.floor(Math.random() * 3); // cu cat numarul este mai mic cu atat tabelul va avea mai putine numere
-            if(b == 0) {
-                    table[i][j] = ""; //  daca pui in comnetariu astaea 2 linii jocul va fi completat automat
-                    table[j][i] = ""; //  
-            }
-        }
-    }
-
-    //<<<design table>>>\\
-    let sudokuTable = document.getElementById("sudokuTable");
-    let pozitionButon = 0, lengthButton = 9;
-    for(let tableLine = 0; tableLine < 9; ++tableLine) {
-        for(let tableColumns = pozitionButon; tableColumns < lengthButton; ++tableColumns) {
-            sudokuTable.innerHTML += '<div class = "garage-title" id = '+ tableLine + tableColumns +
-            ' onclick = "tableSudoku(' +  tableLine +', '+ tableColumns +')">  </div>'; 
-            sudokuTable.innerHTML += " ";
-            document.getElementById('' + tableLine + tableColumns).innerHTML = table[tableLine][tableColumns];
-            //color Minitable
-            if(tableLine < 3 && tableColumns < 3) {
-                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
-            } else if(tableLine < 3 && tableColumns > 5 && tableColumns < 9) {
-                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
-            } else if(tableLine > 2 && tableLine < 6 && tableColumns > 2 && tableColumns < 6) {
-                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
-            } else if(tableLine > 5 && tableLine < 9 && tableColumns < 3) {
-                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
-            } else if(tableLine > 5 && tableLine < 9 && tableColumns > 5 && tableColumns < 9) {
-                document.getElementById('' + tableLine + tableColumns).style.borderColor = "green";
-            } else {
-                document.getElementById('' + tableLine + tableColumns).style.borderColor = "brown";
-            }
-            document.getElementById('' + tableLine + tableColumns).style.color = "brown";
-        }
-        sudokuTable.innerHTML += "<br>";
-    }
-    let sudokuUser = document.getElementById('sudokuUser');
-    //Meniu utilizator
-    for(let arrUser = 0; arrUser < 10; ++arrUser) {
-        sudokuUser.innerHTML += '<button class = "consoleUser" id = '+ arrUser + ' onclick = "userNumber(' +  arrUser +')">  </button>'; 
-        sudokuUser.innerHTML += " ";
-        if(arrUser < 9) {
-            document.getElementById('' + arrUser).innerHTML = arrUser + 1;
-        } else {
-            document.getElementById(arrUser).innerHTML = "Delete";
-        }
-    }
-}
-let index = ""; // nu stiu cum as fi putut transmite parametri intre "tabeleSudoku" si "userNumber" 
-         //am folosit variabila globala index pentru a afla ce numar a apasat in consola utilizatorul
-
-function tableSudoku(tableLine, tableColumns) {
-    if(table[tableLine][tableColumns] == "" && index != " ") {
-        document.getElementById('' + tableLine + tableColumns).innerHTML = index;
-        document.getElementById('' + tableLine + tableColumns).style.color = "green";
-    }
-    index = " ";
-    let endGame = 0;
-    endGame = checkTable(endGame);
-   // console.log(endGame);
-    if(endGame == 81) {
-        document.getElementById("endGame").innerHTML = "Tabel complet apasa aici pentru a incepe jocul din nou";
-    }
+    return table;
 }
 
-function userNumber(arrUser) {
-    index = document.getElementById('' + arrUser).innerHTML;
-    if(index == "Delete") {
-        index = "";
-    }
-}
-
-function checkTable(index) {
-    let tableCompleted = [];
-    for(let i = 0; i < 9; ++i) {
-        tableCompleted[i] = new Array(9);
-    } 
-    for(let i = 0; i < 9; ++i) {
-        for(let j = 0; j < 9; ++j) {
-            tableCompleted[i][j] = document.getElementById('' + i + j).innerHTML;
-        }
-    }
-    for(let i = 0; i < 9; ++i) {
-        for(let j = 0; j < 9; ++j) {
-            if(tableCompleted[i][j] == copyTable[i][j]) {
-                ++index;
-            }
-        }
-    }
-    return index;
-} 
 
 function shuffle(array) {
     let arrMini1 = [], arrMini2 = [], arrMini3 = [];
@@ -156,4 +119,66 @@ function shuffle(array) {
             index = 0;
         }
     }
+}
+
+function finalTable() {
+    let table = matchMatrixRandom();
+    for(let i = 0; i < 9; ++i) {
+        for(let j = 0; j < 9; ++j) {
+            let b = Math.floor(Math.random() * 11); 
+            if(b == 0) {
+               // table[i][j] = ""; 
+                table[j][i] = "";
+            }
+        }
+    }
+    return table;
+} 
+
+let index = 0;
+function tableSudoku(tableLine, tableColumns) {
+    let endGame = 0;
+    endGame = checkTable(endGame);
+    console.log(endGame);
+    if(tableCopy[tableLine][tableColumns] == "" && index != " " && endGame < 81) {
+        document.getElementById('' + tableLine + tableColumns).innerHTML = index;
+        document.getElementById('' + tableLine + tableColumns).style.color = "green";
+    }
+    index = " ";
+    endGame = 0;
+    if(endGame == 81) {
+        restartGame = document.getElementById("endGame");
+        restartGame.innerHTML = '<div class = "restartGame" onclick = "restartPage()"> &#128472; </div>'
+        document.getElementById("TheEnd").innerHTML = "The End";
+    }
+}
+function userNumber(arrUser) {
+    index = document.getElementById('' + arrUser).innerHTML;
+    if(index == "Delete") {
+        index = "";
+    }
+}
+
+function checkTable(index) {
+    let tableCompleted = [];
+    for(let i = 0; i < 9; ++i) {
+        tableCompleted[i] = new Array(9);
+    } 
+    for(let i = 0; i < 9; ++i) {
+        for(let j = 0; j < 9; ++j) {
+            tableCompleted[i][j] = document.getElementById('' + i + j).innerHTML;
+        }
+    }
+    for(let i = 0; i < 9; ++i) {
+        for(let j = 0; j < 9; ++j) {
+            if(tableCompleted[i][j] == finalTableCopy[i][j]) {
+                ++index;
+            }
+        }
+    }
+    return index;
+} 
+
+function restartPage() {
+    location.reload();
 }
