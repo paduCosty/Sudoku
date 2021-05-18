@@ -125,9 +125,9 @@ function finalTable() {
     let table = matchMatrixRandom();
     for(let i = 0; i < 9; ++i) {
         for(let j = 0; j < 9; ++j) {
-            let b = Math.floor(Math.random() * 11); 
+            let b = Math.floor(Math.random() * 3); // change the difficulty level
             if(b == 0) {
-               // table[i][j] = ""; 
+                table[i][j] = ""; 
                 table[j][i] = "";
             }
         }
