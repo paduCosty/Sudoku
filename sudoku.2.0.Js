@@ -139,7 +139,6 @@ let index = 0;
 function tableSudoku(tableLine, tableColumns) {
     let endGame = 0;
     endGame = checkTable(endGame);
-    console.log(endGame);
     if(tableCopy[tableLine][tableColumns] == "" && index != " " && endGame <= 81) {
         document.getElementById('' + tableLine + tableColumns).innerHTML = index;
         document.getElementById('' + tableLine + tableColumns).style.color = "green";
