@@ -125,7 +125,7 @@ function finalTable() {
     let table = matchMatrixRandom();
     for(let i = 0; i < 9; ++i) {
         for(let j = 0; j < 9; ++j) {
-            let b = Math.floor(Math.random() * 3); // change the difficulty level
+            let b = Math.floor(Math.random() * 3); 
             if(b == 0) {
                 table[i][j] = ""; 
                 table[j][i] = "";
@@ -140,16 +140,19 @@ function tableSudoku(tableLine, tableColumns) {
     let endGame = 0;
     endGame = checkTable(endGame);
     console.log(endGame);
-    if(tableCopy[tableLine][tableColumns] == "" && index != " " && endGame < 81) {
+    if(tableCopy[tableLine][tableColumns] == "" && index != " " && endGame <= 81) {
         document.getElementById('' + tableLine + tableColumns).innerHTML = index;
         document.getElementById('' + tableLine + tableColumns).style.color = "green";
     }
     index = " ";
-    endGame = 0;
     if(endGame == 81) {
         restartGame = document.getElementById("endGame");
         restartGame.innerHTML = '<div class = "restartGame" onclick = "restartPage()"> &#128472; </div>'
         document.getElementById("TheEnd").innerHTML = "The End";
+    }
+    let check = gameCheck();
+    if(check == 81 && endGame < 81) {
+        document.getElementById("TheEnd").innerHTML = "The table does not follow the rule!";
     }
 }
 function userNumber(arrUser) {
@@ -181,4 +184,20 @@ function checkTable(index) {
 
 function restartPage() {
     location.reload();
+}
+
+function gameCheck() {
+    matirx = [], check = 0;
+    for(let i = 0; i < 9; ++i) {
+        matirx[i] = new Array(9);
+    }
+    for(let i = 0; i < 9; ++i) {
+        for(let j = 0; j < 9; ++j) {
+            matirx[i][j] = document.getElementById('' + i + j).innerHTML;
+            if(matirx[i][j] != "") {
+                ++check;
+            }
+        }
+    }
+    return check;
 }
